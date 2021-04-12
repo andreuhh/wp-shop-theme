@@ -1,42 +1,60 @@
 <?php
 /**
- * The main template file
+ * The template for displaying the footer
  *
- * This is the most generic template file in a WordPress theme
- * and one of the two required files for a theme (the other being style.css).
- * It is used to display a page when nothing more specific matches a query.
- * E.g., it puts together the home page when no home.php file exists.
+ * Contains the closing of the #page div and all content after.
  *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
+ * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
  *
- * @package andreshop
+ * @package Fancy Lab
  */
 ?>
+		<footer>
+			<section class="footer-widgets">
+				<div class="container">
+					<div class="row">
 
-<footer>
-            <section class="footer-widgets">
-                <div class="container">
-                    <div class="row">Foooter Widgets</div>
-                </div>
-            </section>
-            <section class="copyright">
-                <div class="container">
-                    <div class="row">
-                        <div class="copyright-text col12 col-md-6">Copyright</div>
-                        <nav class="footer-menu col-12 col-md-6 text-left text-md-right">
-                            <?php 
-                                wp_nav_menu(
-                                    array(
-                                        'theme_location' => 'andre_shop_footer_menu'
-                                    )
-                                )
-                            ?>
-                        </nav>
-                    </div>
-                </div>
-            </section>
-        </footer>
-        <?php wp_footer(); ?>
-    </div>
+						<?php if(is_active_sidebar( 'fancy-lab-sidebar-footer1' ) ):?>
+							<div class="col-md-4 col-12">
+								<?php dynamic_sidebar( 'fancy-lab-sidebar-footer1' ); ?>
+							</div>	
+						<?php endif;?>
+
+						<?php if(is_active_sidebar( 'fancy-lab-sidebar-footer2' ) ):?>
+							<div class="col-md-4 col-12">
+								<?php dynamic_sidebar( 'fancy-lab-sidebar-footer2' ); ?>
+							</div>
+						<?php endif;?>
+
+						<?php if(is_active_sidebar( 'fancy-lab-sidebar-footer3' ) ):?>
+							<div class="col-md-4 col-12">
+								<?php dynamic_sidebar( 'fancy-lab-sidebar-footer3' ); ?>
+							</div>
+						<?php endif;?>
+
+					</div>
+				</div>
+			</section>
+			<section class="copyright">
+				<div class="container">
+					<div class="row">
+						<div class="copyright-text col-12 col-md-6">
+							<p><?php echo get_theme_mod( 'set_copyright', 'Copyright X - All Rights Reserved' ); ?></p>
+						</div>
+						<nav class="footer-menu col-12 col-md-6 text-left text-md-right">
+							<?php 
+								wp_nav_menu( 
+									array(
+										'theme_location' 	=> 'fancy_lab_footer_menu'
+									) 
+								); 
+							?>							
+						</nav>
+					</div>
+				</div>
+			</section>
+		</footer>
+	</div>
+<?php wp_footer(); ?>
 </body>
 </html>
