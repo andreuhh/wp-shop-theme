@@ -40,18 +40,18 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @return array
 	 */
 	protected function prepare_reports_query( $request ) {
-		$args                  = array();
-		$args['before']        = $request['before'];
-		$args['after']         = $request['after'];
-		$args['interval']      = $request['interval'];
-		$args['page']          = $request['page'];
-		$args['per_page']      = $request['per_page'];
-		$args['orderby']       = $request['orderby'];
-		$args['order']         = $request['order'];
-		$args['extended_info'] = $request['extended_info'];
-		$args['categories']    = (array) $request['categories'];
-		$args['status_is']     = (array) $request['status_is'];
-		$args['status_is_not'] = (array) $request['status_is_not'];
+		$args                      = array();
+		$args['before']            = $request['before'];
+		$args['after']             = $request['after'];
+		$args['interval']          = $request['interval'];
+		$args['page']              = $request['page'];
+		$args['per_page']          = $request['per_page'];
+		$args['orderby']           = $request['orderby'];
+		$args['order']             = $request['order'];
+		$args['extended_info']     = $request['extended_info'];
+		$args['category_includes'] = (array) $request['categories'];
+		$args['status_is']         = (array) $request['status_is'];
+		$args['status_is_not']     = (array) $request['status_is_not'];
 
 		return $args;
 	}
@@ -285,7 +285,7 @@ class Controller extends ReportsController implements ExportableInterface {
 			'sanitize_callback' => 'wp_parse_slug_list',
 			'validate_callback' => 'rest_validate_request_arg',
 			'items'             => array(
-				'enum' => $this->get_order_statuses(),
+				'enum' => self::get_order_statuses(),
 				'type' => 'string',
 			),
 		);
@@ -295,7 +295,7 @@ class Controller extends ReportsController implements ExportableInterface {
 			'sanitize_callback' => 'wp_parse_slug_list',
 			'validate_callback' => 'rest_validate_request_arg',
 			'items'             => array(
-				'enum' => $this->get_order_statuses(),
+				'enum' => self::get_order_statuses(),
 				'type' => 'string',
 			),
 		);

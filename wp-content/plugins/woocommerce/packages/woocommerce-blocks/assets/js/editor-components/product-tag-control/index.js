@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { debounce, find } from 'lodash';
 import PropTypes from 'prop-types';
 import { SearchListControl, SearchListItem } from '@woocommerce/components';
@@ -74,9 +74,10 @@ class ProductTagControl extends Component {
 				{ ...args }
 				showCount
 				aria-label={ sprintf(
+					// Translators: %1$d is the count of products, %2$s is the name of the tag.
 					_n(
-						'%d product tagged as %s',
-						'%d products tagged as %s',
+						'%1$d product tagged as %2$s',
+						'%1$d products tagged as %2$s',
 						item.count,
 						'woocommerce'
 					),
@@ -107,6 +108,7 @@ class ProductTagControl extends Component {
 			),
 			selected: ( n ) =>
 				sprintf(
+					// Translators: %d is the count of selected tags.
 					_n(
 						'%d tag selected',
 						'%d tags selected',
@@ -122,7 +124,7 @@ class ProductTagControl extends Component {
 		};
 
 		return (
-			<Fragment>
+			<>
 				<SearchListControl
 					className="woocommerce-product-tags"
 					list={ list }
@@ -173,7 +175,7 @@ class ProductTagControl extends Component {
 						/>
 					</div>
 				) }
-			</Fragment>
+			</>
 		);
 	}
 }

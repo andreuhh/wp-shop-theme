@@ -8,8 +8,7 @@ namespace Automattic\WooCommerce\Admin;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\API\Reports\Cache;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Historical_Data;
+use \Automattic\WooCommerce\Admin\Notes\Notes;
 
 /**
  * Install Class.
@@ -54,6 +53,10 @@ class Install {
 			'wc_admin_update_160_remove_facebook_note',
 			'wc_admin_update_160_db_version',
 		),
+		'1.7.0'  => array(
+			'wc_admin_update_170_homescreen_layout',
+			'wc_admin_update_170_db_version',
+		),
 	);
 
 	/**
@@ -72,6 +75,8 @@ class Install {
 		'woocommerce_admin_report_export_status'   => 'wc_admin_report_export_status',
 		'woocommerce_task_list_complete'           => 'woocommerce_task_list_complete',
 		'woocommerce_task_list_hidden'             => 'woocommerce_task_list_hidden',
+		'woocommerce_extended_task_list_complete'  => 'woocommerce_extended_task_list_complete',
+		'woocommerce_extended_task_list_hidden'    => 'woocommerce_extended_task_list_hidden',
 	);
 
 	/**
@@ -132,7 +137,25 @@ class Install {
 		 */
 		if ( ! $version_option || $requires_update ) {
 			self::install();
+			/**
+			 * WooCommerce Admin has been installed or updated.
+			 */
 			do_action( 'woocommerce_admin_updated' );
+
+			if ( ! $version_option ) {
+				/**
+				 * WooCommerce Admin has been installed.
+				 */
+				do_action( 'woocommerce_admin_newly_installed' );
+			}
+
+			if ( $requires_update ) {
+				/**
+				 * An existing installation of WooCommerce Admin has been
+				 * updated.
+				 */
+				do_action( 'woocommerce_admin_updated_existing' );
+			}
 		}
 
 		/*
@@ -165,7 +188,6 @@ class Install {
 		self::create_tables();
 		self::create_events();
 		self::delete_obsolete_notes();
-		self::create_notes();
 		self::maybe_update_db_version();
 
 		delete_transient( 'wc_admin_installing' );
@@ -184,9 +206,7 @@ class Install {
 	protected static function get_schema() {
 		global $wpdb;
 
-		if ( $wpdb->has_cap( 'collation' ) ) {
-			$collate = $wpdb->get_charset_collate();
-		}
+		$collate = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : '';
 
 		// Max DB index length. See wp_get_db_schema().
 		$max_index_length = 191;
@@ -472,6 +492,10 @@ class Install {
 			'wc-admin-store-notice-setting-moved',
 			'wc-admin-store-notice-giving-feedback',
 			'wc-admin-learn-more-about-product-settings',
+			'wc-admin-onboarding-profiler-reminder',
+			'wc-admin-historical-data',
+			'wc-admin-review-shipping-settings',
+			'wc-admin-home-screen-feedback',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(
@@ -486,14 +510,7 @@ class Install {
 			);
 		}
 
-		WC_Admin_Notes::delete_notes_with_name( $obsolete_notes_names );
-	}
-
-	/**
-	 * Create notes.
-	 */
-	protected static function create_notes() {
-		WC_Admin_Notes_Historical_Data::possibly_add_note();
+		Notes::delete_notes_with_name( $obsolete_notes_names );
 	}
 
 	/**

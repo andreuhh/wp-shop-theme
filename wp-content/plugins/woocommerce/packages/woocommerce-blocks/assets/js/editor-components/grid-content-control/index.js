@@ -2,17 +2,20 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { ToggleControl } from '@wordpress/components';
 
 /**
  * A combination of toggle controls for content visibility in product grids.
+ *
+ * @param {Object} props Incoming props for the component.
+ * @param {function(any):any} props.onChange
+ * @param {Object} props.settings
  */
 const GridContentControl = ( { onChange, settings } ) => {
 	const { button, price, rating, title } = settings;
 	return (
-		<Fragment>
+		<>
 			<ToggleControl
 				label={ __( 'Product title', 'woocommerce' ) }
 				help={
@@ -80,7 +83,7 @@ const GridContentControl = ( { onChange, settings } ) => {
 				checked={ button }
 				onChange={ () => onChange( { ...settings, button: ! button } ) }
 			/>
-		</Fragment>
+		</>
 	);
 };
 

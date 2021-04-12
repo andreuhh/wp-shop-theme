@@ -22,9 +22,12 @@ import {
 	SidebarLayout,
 	Main,
 } from '@woocommerce/base-components/sidebar-layout';
-import { getSetting } from '@woocommerce/settings';
 import withScrollToTop from '@woocommerce/base-hocs/with-scroll-to-top';
-import { CHECKOUT_ALLOWS_GUEST } from '@woocommerce/block-settings';
+import {
+	CHECKOUT_ALLOWS_GUEST,
+	CHECKOUT_ALLOWS_SIGNUP,
+} from '@woocommerce/block-settings';
+import { isWcVersion, getSetting } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -53,7 +56,8 @@ const Block = ( props ) => {
  * Main Checkout Component.
  *
  * @param {Object} props Component props.
- * @return {*} The component.
+ * @param {Object} props.attributes Incoming block attributes.
+ * @param {function(any):any} props.scrollToTop Function for scrolling to top.
  */
 const Checkout = ( { attributes, scrollToTop } ) => {
 	const { isEditor } = useEditorContext();
@@ -61,6 +65,7 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 		cartItems,
 		cartTotals,
 		cartCoupons,
+		cartFees,
 		cartNeedsPayment,
 	} = useStoreCart();
 	const {
@@ -80,6 +85,12 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 		checkoutHasError &&
 		( hasValidationErrors || hasNoticesOfType( 'default' ) );
 
+	// Checkout signup is feature gated to WooCommerce 4.7 and newer;
+	// uses updated my-account/lost-password screen from 4.7+ for
+	// setting initial password.
+	const allowCreateAccount =
+		attributes.allowCreateAccount && isWcVersion( '4.7.0', '>=' );
+
 	useEffect( () => {
 		if ( hasErrorsToDisplay ) {
 			showAllValidationErrors();
@@ -91,7 +102,12 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 		return <CheckoutOrderError />;
 	}
 
-	if ( ! isEditor && ! customerId && ! CHECKOUT_ALLOWS_GUEST ) {
+	if (
+		! isEditor &&
+		! customerId &&
+		! CHECKOUT_ALLOWS_GUEST &&
+		! ( allowCreateAccount && CHECKOUT_ALLOWS_SIGNUP )
+	) {
 		return (
 			<>
 				{ __(
@@ -107,7 +123,6 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 			</>
 		);
 	}
-
 	const checkoutClassName = classnames( 'wc-block-checkout', {
 		'has-dark-controls': attributes.hasDarkControls,
 	} );
@@ -123,8 +138,10 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 						showPhoneField={ attributes.showPhoneField }
 						requireCompanyField={ attributes.requireCompanyField }
 						requirePhoneField={ attributes.requirePhoneField }
+						allowCreateAccount={ allowCreateAccount }
 					/>
 					<div className="wc-block-checkout__actions">
+						<PlaceOrderButton />
 						{ attributes.showReturnToCart && (
 							<ReturnToCartButton
 								link={ getSetting(
@@ -133,7 +150,6 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 								) }
 							/>
 						) }
-						<PlaceOrderButton />
 					</div>
 					{ attributes.showPolicyLinks && <Policies /> }
 				</Main>
@@ -142,6 +158,7 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 						cartCoupons={ cartCoupons }
 						cartItems={ cartItems }
 						cartTotals={ cartTotals }
+						cartFees={ cartFees }
 					/>
 				</Sidebar>
 			</SidebarLayout>

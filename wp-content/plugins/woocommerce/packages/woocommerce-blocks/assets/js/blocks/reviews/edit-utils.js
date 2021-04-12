@@ -2,11 +2,11 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { __experimentalCreateInterpolateElement } from 'wordpress-element';
+import { createInterpolateElement } from 'wordpress-element';
 import {
 	Notice,
 	ToggleControl,
-	Toolbar,
+	ToolbarGroup,
 	RangeControl,
 	SelectControl,
 } from '@wordpress/components';
@@ -20,7 +20,7 @@ import ToggleButtonControl from '@woocommerce/editor-components/toggle-button-co
 
 export const getBlockControls = ( editMode, setAttributes ) => (
 	<BlockControls>
-		<Toolbar
+		<ToolbarGroup
 			controls={ [
 				{
 					icon: 'edit',
@@ -50,7 +50,7 @@ export const getSharedReviewContentControls = ( attributes, setAttributes ) => {
 					className="wc-block-base-control-notice"
 					isDismissible={ false }
 				>
-					{ __experimentalCreateInterpolateElement(
+					{ createInterpolateElement(
 						__(
 							'Product rating is disabled in your <a>store settings</a>.',
 							'woocommerce'
@@ -139,7 +139,7 @@ export const getSharedReviewContentControls = ( attributes, setAttributes ) => {
 							className="wc-block-base-control-notice"
 							isDismissible={ false }
 						>
-							{ __experimentalCreateInterpolateElement(
+							{ createInterpolateElement(
 								__(
 									'Reviewer photo is disabled in your <a>site settings</a>.',
 									'woocommerce'

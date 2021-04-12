@@ -7,11 +7,12 @@ import {
 	useContext,
 	useState,
 } from '@wordpress/element';
-import { omit, pickBy } from 'lodash';
+import { pickBy } from 'lodash';
 import isShallowEqual from '@wordpress/is-shallow-equal';
 
 /**
  * @typedef { import('@woocommerce/type-defs/contexts').ValidationContext } ValidationContext
+ * @typedef {import('react')} React
  */
 
 const ValidationContext = createContext( {
@@ -38,6 +39,9 @@ export const useValidationContext = () => {
  *
  * Any children of this context will be exposed to validation state and helpers
  * for tracking validation.
+ *
+ * @param {Object} props Incoming props for the component.
+ * @param {React.ReactChildren} props.children What react elements are wrapped by this component.
  */
 export const ValidationContextProvider = ( { children } ) => {
 	const [ validationErrors, updateValidationErrors ] = useState( {} );
@@ -81,14 +85,35 @@ export const ValidationContextProvider = ( { children } ) => {
 	 * @param {string} property  The name of the property to clear if exists in
 	 *                           validation error state.
 	 */
-	const clearValidationError = useCallback( ( property ) => {
-		updateValidationErrors( ( prevErrors ) => {
-			if ( ! prevErrors[ property ] ) {
-				return prevErrors;
-			}
-			return omit( prevErrors, [ property ] );
-		} );
-	}, [] );
+	const clearValidationError = useCallback(
+		/**
+		 * Callback that is memoized.
+		 *
+		 * @param {string} property
+		 */
+		( property ) => {
+			updateValidationErrors(
+				/**
+				 * Callback for validation Errors handling.
+				 *
+				 * @param {Object} prevErrors
+				 */
+				( prevErrors ) => {
+					if ( ! prevErrors[ property ] ) {
+						return prevErrors;
+					}
+
+					const {
+						// eslint-disable-next-line no-unused-vars -- this is intentional to omit the dynamic property from the returned object.
+						[ property ]: clearedProperty,
+						...newErrors
+					} = prevErrors;
+					return newErrors;
+				}
+			);
+		},
+		[]
+	);
 
 	/**
 	 * Clears the entire validation error state.

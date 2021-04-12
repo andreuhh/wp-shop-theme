@@ -39,8 +39,11 @@ const Label = ( props ) => {
 /**
  * Determine whether COD is available for this cart/order.
  *
- * @param boolean cartNeedsShipping True if the cart contains any physical/shippable products.
- * @return boolean True if COD payment method should be displayed as a payment option.
+ * @param {Object} props Incoming props for the component.
+ * @param {boolean} props.cartNeedsShipping True if the cart contains any physical/shippable products.
+ * @param {boolean} props.selectedShippingMethods
+ *
+ * @return {boolean}  True if COD payment method should be displayed as a payment option.
  */
 const canMakePayment = ( { cartNeedsShipping, selectedShippingMethods } ) => {
 	if ( ! settings.enableForVirtual && ! cartNeedsShipping ) {
@@ -74,11 +77,11 @@ const cashOnDeliveryPaymentMethod = {
 	label: <Label />,
 	content: <Content />,
 	edit: <Content />,
-	icons: null,
 	canMakePayment,
 	ariaLabel: label,
+	supports: {
+		features: settings?.supports ?? [],
+	},
 };
 
-registerPaymentMethod(
-	( Config ) => new Config( cashOnDeliveryPaymentMethod )
-);
+registerPaymentMethod( cashOnDeliveryPaymentMethod );

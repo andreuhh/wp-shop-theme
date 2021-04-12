@@ -2,8 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { clamp, isNaN } from 'lodash';
-import { Fragment } from '@wordpress/element';
+import { clamp } from 'lodash';
 import PropTypes from 'prop-types';
 import { RangeControl, ToggleControl } from '@wordpress/components';
 import {
@@ -15,6 +14,12 @@ import {
 
 /**
  * A combination of range controls for product grid layout settings.
+ *
+ * @param {Object} props Incoming props for the component.
+ * @param {number} props.columns
+ * @param {number} props.rows
+ * @param {function(any):any} props.setAttributes Setter for block attributes.
+ * @param {string} props.alignButtons
  */
 const GridLayoutControl = ( {
 	columns,
@@ -23,14 +28,14 @@ const GridLayoutControl = ( {
 	alignButtons,
 } ) => {
 	return (
-		<Fragment>
+		<>
 			<RangeControl
 				label={ __( 'Columns', 'woocommerce' ) }
 				value={ columns }
 				onChange={ ( value ) => {
 					const newValue = clamp( value, MIN_COLUMNS, MAX_COLUMNS );
 					setAttributes( {
-						columns: isNaN( newValue ) ? '' : newValue,
+						columns: Number.isNaN( newValue ) ? '' : newValue,
 					} );
 				} }
 				min={ MIN_COLUMNS }
@@ -42,7 +47,7 @@ const GridLayoutControl = ( {
 				onChange={ ( value ) => {
 					const newValue = clamp( value, MIN_ROWS, MAX_ROWS );
 					setAttributes( {
-						rows: isNaN( newValue ) ? '' : newValue,
+						rows: Number.isNaN( newValue ) ? '' : newValue,
 					} );
 				} }
 				min={ MIN_ROWS }
@@ -69,7 +74,7 @@ const GridLayoutControl = ( {
 					setAttributes( { alignButtons: ! alignButtons } )
 				}
 			/>
-		</Fragment>
+		</>
 	);
 };
 

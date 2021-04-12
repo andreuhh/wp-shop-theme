@@ -3,7 +3,6 @@
  */
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { decodeEntities } from '@wordpress/html-entities';
 import {
 	useInnerBlockLayoutContext,
 	useProductDataContext,
@@ -12,6 +11,7 @@ import { getColorClassName, getFontSizeClass } from '@wordpress/block-editor';
 import { isFeaturePluginBuild } from '@woocommerce/block-settings';
 import { gatedStyledText } from '@woocommerce/atomic-utils';
 import { withProductDataContext } from '@woocommerce/shared-hocs';
+import ProductName from '@woocommerce/base-components/product-name';
 
 /**
  * Internal dependencies
@@ -30,7 +30,6 @@ import './style.scss';
  * @param {string}  [props.customColor]    Custom title color value.
  * @param {string}  [props.fontSize]       Title font size name.
  * @param {number } [props.customFontSize] Custom font size value.
- * @param {Object}  [props.product]        Optional product object. Product from context
  * will be used if this is not provided.
  * @return {*} The component.
  */
@@ -80,8 +79,6 @@ export const Block = ( {
 		);
 	}
 
-	const productName = decodeEntities( product.name );
-
 	return (
 		// @ts-ignore
 		<TagName
@@ -95,33 +92,19 @@ export const Block = ( {
 				}
 			) }
 		>
-			{ productLink ? (
-				<a
-					href={ product.permalink }
-					rel="nofollow"
-					className={ classnames( {
-						[ titleClasses ]: isFeaturePluginBuild(),
-					} ) }
-					style={ gatedStyledText( {
-						color: customColor,
-						fontSize: customFontSize,
-					} ) }
-				>
-					{ productName }
-				</a>
-			) : (
-				<span
-					className={ classnames( {
-						[ titleClasses ]: isFeaturePluginBuild(),
-					} ) }
-					style={ gatedStyledText( {
-						color: customColor,
-						fontSize: customFontSize,
-					} ) }
-				>
-					{ productName }
-				</span>
-			) }
+			<ProductName
+				className={ classnames( {
+					[ titleClasses ]: isFeaturePluginBuild(),
+				} ) }
+				disabled={ ! productLink }
+				name={ product.name }
+				permalink={ product.permalink }
+				rel={ productLink ? 'nofollow' : null }
+				style={ gatedStyledText( {
+					color: customColor,
+					fontSize: customFontSize,
+				} ) }
+			/>
 		</TagName>
 	);
 };

@@ -9,6 +9,8 @@
  * @version 2.1.0
  */
 
+use Automattic\WooCommerce\Utilities\NumberUtil;
+
 defined( 'ABSPATH' ) || exit;
 
 require_once WC_ABSPATH . 'includes/legacy/class-wc-legacy-cart.php';
@@ -208,7 +210,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	}
 
 	/**
-	 * Get subtotal.
+	 * Get subtotal_tax.
 	 *
 	 * @since 3.2.0
 	 * @return float
@@ -660,10 +662,10 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * Get weight of items in the cart.
 	 *
 	 * @since 2.5.0
-	 * @return int
+	 * @return float
 	 */
 	public function get_cart_contents_weight() {
-		$weight = 0;
+		$weight = 0.0;
 
 		foreach ( $this->get_cart() as $cart_item_key => $values ) {
 			if ( $values['data']->has_weight() ) {
@@ -858,8 +860,8 @@ class WC_Cart extends WC_Legacy_Cart {
 	 */
 	public function get_tax_totals() {
 		$shipping_taxes = $this->get_shipping_taxes(); // Shipping taxes are rounded differently, so we will subtract from all taxes, then round and then add them back.
-		$taxes = $this->get_taxes();
-		$tax_totals = array();
+		$taxes          = $this->get_taxes();
+		$tax_totals     = array();
 
 		foreach ( $taxes as $key => $tax ) {
 			$code = WC_Tax::get_rate_code( $key );
@@ -877,7 +879,7 @@ class WC_Cart extends WC_Legacy_Cart {
 				if ( isset( $shipping_taxes[ $key ] ) ) {
 					$tax -= $shipping_taxes[ $key ];
 					$tax  = wc_round_tax_total( $tax );
-					$tax += round( $shipping_taxes[ $key ], wc_get_price_decimals() );
+					$tax += NumberUtil::round( $shipping_taxes[ $key ], wc_get_price_decimals() );
 					unset( $shipping_taxes[ $key ] );
 				}
 				$tax_totals[ $code ]->amount          += wc_round_tax_total( $tax );
@@ -1619,7 +1621,11 @@ class WC_Cart extends WC_Legacy_Cart {
 					$coupon_data_store = $coupon->get_data_store();
 					$billing_email     = strtolower( sanitize_email( $billing_email ) );
 					if ( $coupon_data_store && $coupon_data_store->get_usage_by_email( $coupon, $billing_email ) >= $coupon_usage_limit ) {
-						$coupon->add_coupon_message( WC_Coupon::E_WC_COUPON_USAGE_LIMIT_REACHED );
+						if ( $coupon_data_store->get_tentative_usages_for_user( $coupon->get_id(), array( $billing_email ) ) ) {
+							$coupon->add_coupon_message( WC_Coupon::E_WC_COUPON_USAGE_LIMIT_COUPON_STUCK_GUEST );
+						} else {
+							$coupon->add_coupon_message( WC_Coupon::E_WC_COUPON_USAGE_LIMIT_REACHED );
+						}
 					}
 				}
 			}
