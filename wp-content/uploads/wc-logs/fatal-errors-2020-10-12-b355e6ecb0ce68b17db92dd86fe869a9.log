@@ -1,0 +1,8 @@
+2020-10-12T09:14:06+00:00 CRITICAL syntax error, unexpected end of file in /Applications/MAMP/htdocs/shopTheme/wp-content/themes/andreshop/functions.php on line 43
+
+2020-10-12T14:33:57+00:00 CRITICAL syntax error, unexpected '(', expecting ';' in /Applications/MAMP/htdocs/shopTheme/wp-content/themes/andreshop/header.php on line 55
+
+2020-10-12T14:33:59+00:00 CRITICAL syntax error, unexpected '(', expecting ';' in /Applications/MAMP/htdocs/shopTheme/wp-content/themes/andreshop/header.php on line 55
+
+2020-10-12T14:34:17+00:00 CRITICAL syntax error, unexpected '(', expecting ';' in /Applications/MAMP/htdocs/shopTheme/wp-content/themes/andreshop/header.php on line 55
+
