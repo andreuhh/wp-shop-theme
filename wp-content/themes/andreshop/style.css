@@ -486,6 +486,15 @@ footer {
     color: #737373 !important;
 }
 
+/* about page */
+.hero {
+    width: 100%;
+    height: 600px;
+    background-image: url(./img/14.jpg);
+    background-size: cover;
+    background-repeat: center;
+}
+
 
 /* WooCommerce */
 
@@ -789,7 +798,7 @@ ul li a,
 }
 
 h4.widget-title {
-    color: #FBF8F7 !important;
+    color: #C29379 !important;
 }
 
 
