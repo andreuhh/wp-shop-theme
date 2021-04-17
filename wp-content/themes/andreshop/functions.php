@@ -35,6 +35,8 @@ function fancy_lab_scripts(){
  }
  add_action( 'wp_enqueue_scripts', 'fancy_lab_scripts' );
 
+ 
+
 /**
 * Sets up theme defaults and registers support for various WordPress features.
 *
