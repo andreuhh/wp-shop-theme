@@ -12,13 +12,13 @@ get_header();
         <div class="container">
             <div class="error-404">
                 <header>
-                    <h1>Page not found</h1>
-                    <p>Unfortunately, the page is not found</p>
+                    <h1><?php esc_html_e('Page not found', 'fancy-lab');?></h1>
+                    <p><?php esc_html_e('Unfortunately, the page is not found', 'fancy-lab');?></p>
                 </header>
                 <?php 
                     the_widget( 'WP_Widget_Recent_Posts', 
                         array(
-                            'title'     => 'Take a look at our Latest Post',
+                            'title'     => esc_html__('Take a look at our Latest Post', 'fancy-lab'),
                             'number'    => 3,
                     ) );
                 ?>

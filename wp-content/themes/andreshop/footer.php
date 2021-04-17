@@ -10,7 +10,7 @@
  */
 ?>
 		<footer>
-			<section class="footer-widgets">
+			<section class="footer-widgets py-5">
 				<div class="container">
 					<div class="row">
 
