@@ -486,6 +486,10 @@ footer {
     color: #737373 !important;
 }
 
+.footer-widgets ul a {
+    color: #737373 !important;
+}
+
 /* about page */
 .hero {
     width: 100%;
